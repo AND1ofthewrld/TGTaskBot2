@@ -3,7 +3,7 @@ import configDE
 from telebot import types
 import requests
 from io import BytesIO
-
+variable = 0
 bot = telebot.TeleBot(configDE.token)
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -17,6 +17,12 @@ def start(message):
     markup.add(item1, item2)
 
     bot.send_message(message.chat.id, mess, parse_mode='html', reply_markup=markup)
+
+@bot.message_handler(commands=['stop'])
+def stop(message):
+    bot.send_message(message.chat.id, 'Бот остановлен.')
+    bot.stop_polling()
+
 @bot.message_handler(func=lambda message: message.text.lower() == 'репозиторий')
 def ask_for_password(message):
     bot.send_message(message.chat.id, "Для доступа к репозиторию введите пароль:")
@@ -27,7 +33,7 @@ def check_password(message):
 
     if user_input == "1234":
         markup = types.InlineKeyboardMarkup()
-        markup.add(types.InlineKeyboardButton("Перейти в репозиторий", url="https://github.com/AND1ofthewrld/DeminTGBot"))
+        markup.add(types.InlineKeyboardButton("Перейти в репозиторий", url="https://github.com/AND1ofthewrld/TGTaskBot2/tree/master"))
         bot.send_message(message.chat.id, "Пароль верный. Вот кнопка для перехода в репозиторий:", reply_markup=markup)
     else:
         bot.send_message(message.chat.id, "Пароль неверный. Попробуйте еще раз.")
@@ -45,12 +51,5 @@ def text(message):
             bot.send_chat_action(message.chat.id, 'upload_audio')
             bot.send_audio(message.chat.id, response.content, title='Аудио')
 
-# @bot.message_handler(commands=['stop'])
-# def stop(message):
-#     bot.send_message(message.chat.id, 'Бот остановлен.')
-#     exit()
-#
-bot.polling(none_stop=True)
 
-
-
+bot.polling()
